@@ -28,3 +28,11 @@ Tool-aware AI agents are transforming industries by leveraging external tools (e
   - Efficiency (time to task completion)
   - Error analysis (failure modes)
 - **Open-Ended Prompts**: Explore how ambiguous prompts influence decisions.
+
+📜 License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+🤝 Acknowledgments
+
+This project builds on the research and methodologies outlined in the accompanying paper (to be linked). Special thanks to the open-source community for inspiration and tools like LangChain and OpenAI’s APIs.
