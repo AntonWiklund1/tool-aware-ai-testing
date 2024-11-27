@@ -37,12 +37,23 @@ Key Contributions:
 
 ## 🔍 Features
 
-- **Multi-Tool Simulations**: Tasks like summarization, database updates, web search, transcription, and more.
+- **Multi-Tool Simulations**:
+
+  - summarization
+  - database updates
+  - web search
+  - coding
+  - actions (e.g. refunds, change userdata)
+  - Statistical Analysis (For processing numerical data)
+  - Calendar Integration
+  - Task Management (Organizing to-do lists or project tasks)
+
 - **Decision Pathways**: Testing techniques such as:
   - **ReAct (Reasoning + Acting)**
   - **Plan + Execute**
   - **Swarm Behavior Models**
 - **Model Selection Testing**: Analyze how the choice of AI model affects tool selection and performance.
+- **Instructions**: Analyze how the choice of instructions affects tool selection and performance.
 - **Metrics for Analysis**:
   - Task success rate
   - Efficiency (time to task completion)
@@ -50,6 +61,12 @@ Key Contributions:
 - **Open-Ended Prompts**: Explore how ambiguous prompts influence decisions.
 
 ---
+
+## Database
+
+The database is used to store the test and the results of the experiments. It is a postgres database and is hosted locally.
+
+[`database.md`](docs/database.md) contains more information about the database.
 
 ## 📜 License
 
