@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict, List, Union
 
 def task_managment_tool(date: str, category: Optional[str] = None, priority: Optional[str] = None, **kwargs) -> str:
     """
@@ -10,20 +10,64 @@ def task_managment_tool(date: str, category: Optional[str] = None, priority: Opt
         priority: Optional priority filter (low, medium, high)
     
     Returns:
-        str:  task list for the specified date
+        str: task list for the specified date
     """
-    mock_tasks = {
-        "meetings": "Team standup at 10:00 AM\nClient presentation at 2:00 PM",
-        "deadlines": "Project proposal due by 5:00 PM",
-        "todos": "Review pull requests\nUpdate documentation",
-        "all": """
- Task List for {date}:
-- Team standup (10:00 AM) [category: meetings] [priority: high]
-- Client presentation (2:00 PM) [category: meetings] [priority: high]
-- Project proposal deadline (5:00 PM) [category: deadlines] [priority: high]
-- Review pull requests [category: todos] [priority: medium]
-- Update documentation [category: todos] [priority: low]
-"""
+    # Structured mock data for internal use
+    structured_tasks = {
+        "tasks": [
+            {
+                "title": "Team standup",
+                "time": "10:00 AM",
+                "category": "meetings",
+                "priority": "high",
+                "duration": 30,
+                "participants": 8
+            },
+            {
+                "title": "Client presentation",
+                "time": "2:00 PM",
+                "category": "meetings",
+                "priority": "high",
+                "duration": 60,
+                "participants": 12
+            },
+            {
+                "title": "Project proposal deadline",
+                "time": "5:00 PM",
+                "category": "deadlines",
+                "priority": "high",
+                "duration": 0
+            },
+            {
+                "title": "Review pull requests",
+                "category": "todos",
+                "priority": "medium",
+                "duration": 45
+            },
+            {
+                "title": "Update documentation",
+                "category": "todos",
+                "priority": "low",
+                "duration": 90
+            }
+        ]
     }
 
-    return mock_tasks.get("all", "No tasks found for this date").format(date=date)
+    # Filter tasks based on category and priority
+    filtered_tasks = [
+        task for task in structured_tasks["tasks"]
+        if (not category or task["category"] == category) and
+           (not priority or task["priority"] == priority)
+    ]
+
+    # If no tasks match the filters
+    if not filtered_tasks:
+        return "No tasks found for this date"
+
+    # Format output string
+    output = f" Task List for {date}:"
+    for task in filtered_tasks:
+        time_info = f" ({task['time']})" if "time" in task else ""
+        output += f"\n- {task['title']}{time_info} [category: {task['category']}] [priority: {task['priority']}]"
+
+    return output
