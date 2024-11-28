@@ -1,8 +1,14 @@
-from typing import Optional
+from typing import Optional, Dict, List, Union
+import subprocess
+import tempfile
+import os
+import sys
+import json
+from datetime import datetime
 
 def code_tool(code: str, language: str = "python", timeout: int = 30, **kwargs) -> str:
     """
-    Execution of code snippets in various programming languages.
+    Executes code snippets in various programming languages.
     
     Args:
         code: The code to execute
@@ -12,20 +18,121 @@ def code_tool(code: str, language: str = "python", timeout: int = 30, **kwargs) 
     Returns:
         str: Execution results
     """
-    mock_results = {
-        "python": """
-Python Execution Result:
-> Output: Hello, World!
-> Execution time: 0.023s
-> Memory usage: 12.4 MB
-""",
-        "javascript": """
-JavaScript Execution Result:
-> Output: Hello, World!
-> Execution time: 0.015s
-> Memory usage: 8.2 MB
-""",
-        "error": "Error: Execution failed - Invalid syntax"
-    }
+    print("running code_tool")
+    def get_version_info(lang: str) -> dict:
+        versions = {
+            "python": ["python", "--version"],
+            "node": ["node", "--version"],
+            "typescript": ["tsc", "--version"]
+        }
+        try:
+            cmd = versions.get(lang)
+            if cmd:
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                return result.stdout.strip()
+        except:
+            return "Version unknown"
 
-    return mock_results.get(language.lower(), mock_results["error"])
+    def format_success_output(output: str, execution_time: float, lang: str) -> str:
+        return f"""
+{lang.title()} Execution Result:
+> Output: {output}
+> Execution time: {execution_time:.3f}s
+> {lang.title()} version: {get_version_info(lang)}
+"""
+
+    def format_error_output(error: str, lang: str) -> str:
+        return f"""
+{lang.title()} Execution Error:
+> Error: {error}
+"""
+
+    def execute_python(code: str, timeout: int) -> tuple[str, float]:
+        start_time = datetime.now()
+        try:
+            # Create a temporary file
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+                f.write(code)
+                temp_file = f.name
+
+            # Execute in a subprocess with timeout
+            result = subprocess.run(
+                [sys.executable, temp_file],
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+            
+            execution_time = (datetime.now() - start_time).total_seconds()
+            
+            if result.stderr:
+                return format_error_output(result.stderr, "python"), execution_time
+            return result.stdout, execution_time
+            
+        except subprocess.TimeoutExpired:
+            return "Execution timed out", timeout
+        except Exception as e:
+            return str(e), 0
+        finally:
+            # Cleanup
+            if 'temp_file' in locals():
+                os.unlink(temp_file)
+
+    def execute_typescript(code: str, timeout: int) -> tuple[str, float]:
+        start_time = datetime.now()
+        try:
+            # Create temporary TypeScript file
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.ts', delete=False) as f:
+                f.write(code)
+                temp_file = f.name
+
+            # Compile TypeScript
+            compile_result = subprocess.run(
+                ['tsc', temp_file],
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+
+            if compile_result.stderr:
+                return format_error_output(compile_result.stderr, "typescript"), 0
+
+            # Execute compiled JavaScript
+            js_file = temp_file.replace('.ts', '.js')
+            result = subprocess.run(
+                ['node', js_file],
+                capture_output=True,
+                text=True,
+                timeout=timeout
+            )
+            
+            execution_time = (datetime.now() - start_time).total_seconds()
+            
+            if result.stderr:
+                return format_error_output(result.stderr, "typescript"), execution_time
+            return result.stdout, execution_time
+
+        except subprocess.TimeoutExpired:
+            return "Execution timed out", timeout
+        except Exception as e:
+            return str(e), 0
+        finally:
+            # Cleanup
+            if 'temp_file' in locals():
+                os.unlink(temp_file)
+                js_file = temp_file.replace('.ts', '.js')
+                if os.path.exists(js_file):
+                    os.unlink(js_file)
+
+    # Execute code based on language
+    language = language.lower()
+    if language == "python":
+        output, execution_time = execute_python(code, timeout)
+    elif language == "typescript":
+        output, execution_time = execute_typescript(code, timeout)
+    else:
+        return f"Unsupported language: {language}. Supported languages: python, typescript"
+
+    if "Error:" in output:
+        return output
+    return format_success_output(output, execution_time, language)
