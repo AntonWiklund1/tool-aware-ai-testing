@@ -22,7 +22,7 @@ def insert_prompts_from_json(data: Dict[str, Any]) -> tuple[int, str]:
             tools_available = prompt_data.get('tools_available', DEFAULT_TOOLS)
             
             cursor.execute("""
-                INSERT INTO prompts (prompt, prompt_category, correct_tool, tools_available)
+                INSERT INTO prompts (prompt, prompt_category, correct_tools, tools_available)
                 VALUES (%s, %s, %s, %s)
             """, (
                 prompt_data['prompt'],
@@ -118,7 +118,7 @@ def main():
     {
       "prompt": "What meetings do I have next week?",
       "prompt_category": "calendar",
-      "correct_tool": ["calendar_tool"],
+      "correct_tools": ["calendar_tool"],
       "tools_available": ["calendar_tool", "task_managment_tool"] // Optional, will default to all tools if not provided
     }
   ]
