@@ -268,18 +268,19 @@ print(f"Standard Deviation: {std_dev:.2f}")
 
 **Name**: summary_tool
 
-**Purpose**: Generates summaries of documents.
+**Purpose**: Generates summaries of user-uploaded documents (for example in law firms when a lawyer can have multiple documents to a case)
 **Parameters**:
-
-- `text`: Optional text to summarize
+No parameters needed
 
 **Mock Data Structure**:
-Fixed response with key points about:
+```
 
-- Document topics
-- Data analysis importance
-- Communication effectiveness
-- Technology trends
+- The document discusses various topics.
+- Key points include the importance of data analysis and effective communication.
+- Concludes with future trends in technology.
+
+```
+
 
 **Example Response**:
 
