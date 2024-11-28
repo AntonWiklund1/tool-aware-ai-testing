@@ -8,9 +8,7 @@ def summary_tool(**kwargs) -> str:
     Returns:
         str:  summary of the text.
     """
-    #  text if none is provided
-    if not text:
-        text = "This is a  document containing various topics and information."
+    print("running summary_tool")
 
     #  summary response
     mock_summary = """
