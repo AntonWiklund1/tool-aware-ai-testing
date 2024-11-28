@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 class DatabaseToolParams(BaseModel):
     query: str = Field(..., description="The SQL query to execute")
 
 class StatisticalAnalysisToolParams(BaseModel):
-    data: List[Union[int, float]] = Field(..., description="List of numerical data points to analyze")
+    data: List[Union[int, float, Dict]] = Field(..., description="List of numerical data points to analyze")
     analysis_type: str = Field(..., description="Type of analysis to perform (mean, median, mode, std_dev, all)")
     confidence_level: Optional[float] = Field(0.95, description="Confidence level for statistical calculations (0-1)")
 
