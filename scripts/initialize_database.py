@@ -20,8 +20,10 @@ CREATE TABLE prompts (
     id SERIAL PRIMARY KEY,
     prompt TEXT NOT NULL,
     prompt_category TEXT NOT NULL,
-    correct_tool TEXT NOT NULL,
-    tools_available TEXT[] NOT NULL
+    correct_tools TEXT[] NOT NULL,
+    tools_available TEXT[] NOT NULL,
+    expected_order BOOLEAN DEFAULT false,
+    success_criteria JSONB
 );
 """)
 
