@@ -1,35 +1,70 @@
-from typing import List, Union
+from typing import List, Union, Dict
+from statistics import mean, median, mode, stdev
 
-def statistical_analysis_tool(data: List[Union[int, float]], analysis_type: str, confidence_level: float = 0.95, **kwargs) -> str:
+def statistical_analysis_tool(data: List[Union[int, float, Dict]], analysis_type: str, confidence_level: float = 0.95, **kwargs) -> str:
     """
-    This tool performs statistical analysis on numerical data and returns  results.
+    This tool performs statistical analysis on numerical data and returns results.
     
     Args:
-        data: List of numerical values to analyze
+        data: List of numerical values or dictionaries with numerical values to analyze
         analysis_type: Type of analysis to perform (mean, median, mode, std_dev, all)
         confidence_level: Confidence level for statistical calculations (default: 0.95)
     
     Returns:
-        str:  statistical analysis results
+        str: Statistical analysis results
     """
-    #  responses based on analysis type
-    analysis_results = {
-        "mean": f" Mean: {sum(data)/len(data):.2f}",
-        "median": " Median: 42.0",
-        "mode": " Mode: 37.5",
-        "std_dev": " Standard Deviation: 12.3",
-        "all": """
- Statistical Analysis Results:
-- Mean: 45.7
-- Median: 42.0
-- Mode: 37.5
-- Standard Deviation: 12.3
-- Confidence Interval (95%): [41.2, 50.2]
-"""
-    }
+    print("running statistical_analysis_tool")
+    # Convert string input to list if needed
+    if isinstance(data, str):
+        try:
+            # Remove brackets and split by comma
+            data = [float(x.strip()) for x in data.strip('[]').split(',')]
+        except ValueError:
+            return "Error: Invalid data format. Please provide numerical values."
 
-    # Return  result based on requested analysis type
-    return analysis_results.get(
-        analysis_type.lower(),
-        f"Invalid analysis type. Available types: {', '.join(analysis_results.keys())}"
-    )
+    # Ensure data is a list
+    if not isinstance(data, list):
+        return "Error: Data must be a list of numerical values"
+
+    # Extract numerical data if input is a list of dictionaries
+    numerical_data = []
+    if data and isinstance(data[0], dict):
+        for item in data:
+            if "duration" in item:
+                numerical_data.append(item["duration"])
+            if "participants" in item:
+                numerical_data.append(item["participants"])
+    else:
+        numerical_data = data
+
+    if not numerical_data:
+        return "No numerical data available for analysis"
+
+    try:
+        calculated_results = {
+            "mean": round(mean(numerical_data), 2),
+            "median": round(median(numerical_data), 2),
+            "mode": round(mode(numerical_data), 2),
+            "std_dev": round(stdev(numerical_data), 2) if len(numerical_data) > 1 else 0,
+            "count": len(numerical_data),
+            "sum": sum(numerical_data)
+        }
+
+        # Format output based on analysis type
+        if analysis_type.lower() == "all":
+            return f"""Statistical Analysis Results:
+- Mean: {calculated_results['mean']}
+- Median: {calculated_results['median']}
+- Mode: {calculated_results['mode']}
+- Standard Deviation: {calculated_results['std_dev']}
+- Sample Size: {calculated_results['count']}
+- Total: {calculated_results['sum']}"""
+        
+        elif analysis_type.lower() in calculated_results:
+            return f"{analysis_type.title()}: {calculated_results[analysis_type.lower()]}"
+        
+        else:
+            return f"Invalid analysis type. Available types: {', '.join(calculated_results.keys())}"
+
+    except Exception as e:
+        return f"Error performing statistical analysis: {str(e)}"
