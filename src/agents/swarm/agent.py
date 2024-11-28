@@ -57,6 +57,6 @@ def swarm_response(
         return "I apologize, but I couldn't generate a response at this time. Please try again."
         
     except Exception as e:
-        logging.error(f"Error in get_response: {e}")
+        logging.error(f"Error in swarm_response: {e}")
         return "I apologize, but an error occurred while processing your request. Please try again."
     
