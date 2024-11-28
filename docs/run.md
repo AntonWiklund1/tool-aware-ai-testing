@@ -26,6 +26,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+# Initialize the database
+
+```bash
+python -m scripts.initialize_database
+```
+
 # Insert prompts
 
 ```bash
