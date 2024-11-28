@@ -118,7 +118,7 @@ def main():
     {
       "prompt": "What meetings do I have next week?",
       "prompt_category": "calendar",
-      "correct_tool": "calendar_tool",
+      "correct_tool": ["calendar_tool"],
       "tools_available": ["calendar_tool", "task_managment_tool"] // Optional, will default to all tools if not provided
     }
   ]
