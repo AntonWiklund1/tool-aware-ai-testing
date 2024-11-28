@@ -21,9 +21,7 @@ CREATE TABLE prompts (
     prompt TEXT NOT NULL,
     prompt_category TEXT NOT NULL,
     correct_tools TEXT[] NOT NULL,
-    tools_available TEXT[] NOT NULL,
-    expected_order BOOLEAN DEFAULT false,
-    success_criteria JSONB
+    tools_available TEXT[] NOT NULL
 );
 """)
 
