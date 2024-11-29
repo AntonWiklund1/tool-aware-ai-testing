@@ -1,3 +1,6 @@
+from src.utils.tracking import track_tool_usage
+
+@track_tool_usage
 def summary_tool(**kwargs) -> str:
     """
     Get a summary of the user's documents.
@@ -8,8 +11,6 @@ def summary_tool(**kwargs) -> str:
     Returns:
         str:  summary of the text.
     """
-    print("running summary_tool")
-
     #  summary response
     mock_summary = """
 - The document discusses various topics.
