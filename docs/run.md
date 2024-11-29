@@ -37,3 +37,19 @@ python -m scripts.initialize_database
 ```bash
 python -m streamlit run src/apps/prompt_manager.py
 ```
+
+# Run experiments
+
+1. Set the environment variables
+
+```bash
+export OPENAI_API_KEY="your_openai_api_key"
+```
+
+(or set the environment variables in the `.env` file)
+
+2. Run the experiments
+
+```bash
+python -m scripts.run_experiments
+```
