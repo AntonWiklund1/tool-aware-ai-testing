@@ -15,6 +15,7 @@ def database_tool(query: str, **kwargs) -> str:
     - `city`
     - `language`
     - `gender`
+    - `engagement_score`
 
     Args:
         query (str): The SQL query to execute.
