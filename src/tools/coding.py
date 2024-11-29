@@ -1,11 +1,11 @@
-from typing import Optional, Dict, List, Union
 import subprocess
 import tempfile
 import os
 import sys
-import json
 from datetime import datetime
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def code_tool(code: str, language: str = "python", timeout: int = 30, **kwargs) -> str:
     """
     Executes code snippets in various programming languages.
@@ -18,7 +18,6 @@ def code_tool(code: str, language: str = "python", timeout: int = 30, **kwargs) 
     Returns:
         str: Execution results
     """
-    print("running code_tool")
     def get_version_info(lang: str) -> dict:
         versions = {
             "python": ["python", "--version"],
