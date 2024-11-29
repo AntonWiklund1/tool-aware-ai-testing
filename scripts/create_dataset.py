@@ -10,7 +10,7 @@ from src.tools import DEFAULT_TOOLS
 
 load_dotenv()
 
-SAMPLES_PER_RUN = 10
+SAMPLES_PER_RUN = 50
 RUNS = 2
 
 def save_to_database(synthetic_data):
@@ -57,7 +57,7 @@ def main():
     prompt_template = create_prompt_template()
     
     # Initialize LLM
-    llm = ChatOpenAI(name="gpt-4o-mini", temperature=0, cache=cache)
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, cache=cache)
     
     # Generate examples
     all_results = []
@@ -90,8 +90,12 @@ def print_statistics(df: pd.DataFrame):
     """Print debug information about the generated data."""
     print("-"*100)
     print(f"Total number of unique examples generated: {len(df)}")
-    print("\nDistribution of tools used:")
     
+    if len(df) == 0:
+        print("No examples were generated. Please check your model configuration.")
+        return
+        
+    print("\nDistribution of tools used:")
     tool_counts = {}
     for tools in df['correct_tools']:
         for tool in tools:
@@ -101,7 +105,6 @@ def print_statistics(df: pd.DataFrame):
         print(f"{tool}: {count} times")
     
     print("\nFirst few examples:")
-    # Print the first 5 rows of the DataFrame with no truncation
     pd.set_option('display.max_columns', None)
     print(df.head())
 
