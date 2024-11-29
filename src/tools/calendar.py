@@ -1,5 +1,7 @@
 from typing import Optional, Dict, List, Union
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def calendar_tool(start_date: str, days: int = 7, category: Optional[str] = None, **kwargs) -> str:
     """
     Get calendar events for a specified date range.
