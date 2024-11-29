@@ -11,7 +11,7 @@ from src.tools import DEFAULT_TOOLS
 load_dotenv()
 
 SAMPLES_PER_RUN = 50
-RUNS = 2
+RUNS = 1
 
 def save_to_database(synthetic_data):
     """Save the generated data to PostgreSQL database."""
@@ -20,23 +20,25 @@ def save_to_database(synthetic_data):
         # Prepare the insert query
         insert_query = """
             INSERT INTO prompts (prompt, prompt_category, correct_tools, tools_available)
-            VALUES (%s, %s, %s, %s::text[])
+            VALUES (%s, %s, %s, %s)
         """
         
         # Insert each record
         for item in synthetic_data:
-            # Take the first tool as the correct_tool
-            correct_tool = item['correct_tools'][0] if isinstance(item['correct_tools'], list) else item['correct_tools']
-            
-            # Format DEFAULT_TOOLS as a proper PostgreSQL array
-            tools_array = '{' + ','.join(f'"{tool}"' for tool in DEFAULT_TOOLS) + '}'
-            correct_tool_array = '{' + f'"{correct_tool}"' + '}'
+            # Convert the tools list to a proper PostgreSQL array format
+            correct_tools = item['correct_tools']
+            if isinstance(correct_tools, str):
+                correct_tools = [correct_tools]
+                
+            # Format arrays properly for PostgreSQL
+            correct_tools_array = '{' + ','.join(tool.strip('"') for tool in correct_tools) + '}'
+            tools_available_array = '{' + ','.join(DEFAULT_TOOLS) + '}'
 
             cur.execute(insert_query, (
                 item['prompt'],
                 item['prompt_category'],
-                correct_tool_array,
-                tools_array
+                correct_tools_array,
+                tools_available_array
             ))
         
         conn.commit()
@@ -57,7 +59,7 @@ def main():
     prompt_template = create_prompt_template()
     
     # Initialize LLM
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, cache=cache)
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0, cache=cache)
     
     # Generate examples
     all_results = []
