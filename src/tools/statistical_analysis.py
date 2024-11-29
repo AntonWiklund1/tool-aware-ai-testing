@@ -1,6 +1,8 @@
 from typing import List, Union, Dict
 from statistics import mean, median, mode, stdev
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def statistical_analysis_tool(data: List[Union[int, float, Dict]], analysis_type: str, confidence_level: float = 0.95, **kwargs) -> str:
     """
     This tool performs statistical analysis on numerical data and returns results.
@@ -13,7 +15,6 @@ def statistical_analysis_tool(data: List[Union[int, float, Dict]], analysis_type
     Returns:
         str: Statistical analysis results
     """
-    print("running statistical_analysis_tool")
     # Convert string input to list if needed
     if isinstance(data, str):
         try:
