@@ -1,6 +1,6 @@
-from typing import Dict, List, Optional, Union
-import json
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def search_web_tool(query: str, **kwargs) -> str:
     """Search the web for information.
 
