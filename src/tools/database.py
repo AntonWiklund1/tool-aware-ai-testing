@@ -85,9 +85,9 @@ def database_tool(query: str, **kwargs) -> str:
     # Mock query responses
     mock_results = {
         "SELECT": format_select_results(structured_data["users"]),
-        "INSERT": "Insert: Successfully inserted 1 row",
-        "UPDATE": "Update: Successfully updated 5 rows",
-        "DELETE": "Delete: Successfully deleted 2 rows",
+        "INSERT": "Insert: Successfully inserted",
+        "UPDATE": "Update: Successfully updated",
+        "DELETE": "Delete: Successfully deleted",
         "error": "Error: Invalid SQL query syntax"
     }
 
