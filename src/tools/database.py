@@ -1,6 +1,7 @@
-from typing import Optional, Dict, List, Union
-from datetime import datetime, timedelta
+from typing import Dict, List
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def database_tool(query: str, **kwargs) -> str:
     """
     Executes a SQL query on the database.
@@ -21,7 +22,6 @@ def database_tool(query: str, **kwargs) -> str:
     Returns:
         str: database query results
     """
-    print("running database_tool")
     # Structured mock data for internal use
     structured_data = {
         "users": [
