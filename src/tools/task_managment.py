@@ -1,5 +1,7 @@
-from typing import Optional, Dict, List, Union
+from typing import Optional
+from src.utils.tracking import track_tool_usage
 
+@track_tool_usage
 def task_managment_tool(date: str, category: Optional[str] = None, priority: Optional[str] = None, **kwargs) -> str:
     """
     This tool manages tasks and to-do lists for specific dates.
