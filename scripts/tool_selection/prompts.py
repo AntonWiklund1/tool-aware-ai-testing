@@ -48,7 +48,11 @@ Make sure to:
 2. Include diverse scenarios that test different tool capabilities
 3. Sometimes use multiple tools when appropriate
 4. Make the prompts realistic and practical
-5. Consider the specific capabilities of each tool""",
+5. Consider the specific capabilities of each tool
+6. when the code tool is used, the code should be in a code block or a prompt that tells what code to make and execute using the code tool
+
+So dont use the code tool to execute code that is not in a code block or a prompt that tells what code to make and execute using the code tool
+""",
         examples=EXAMPLES,
         suffix="Now, please generate exactly {num_samples} new, diverse examples. Number them from 1 to {num_samples}.",
         input_variables=["num_samples", "tool_descriptions"],
