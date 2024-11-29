@@ -1,5 +1,4 @@
 from typing import List, Optional
-import json
 from langchain_openai import ChatOpenAI
 from langchain.prompts import FewShotPromptTemplate
 from .models import ToolSelectionData
@@ -32,13 +31,16 @@ def generate_examples(
     
     try:
         response = llm.invoke(formatted_prompt)
+        print("-" * 100)
+        print("response", response.content)
+        print("-" * 100)
         examples_text = response.content.split('\n\n')
         examples = []
-        
+
         for example_text in examples_text:
             if not example_text.strip():
                 continue
-            
+
             try:
                 example = parse_example(example_text)
                 if example:
@@ -46,7 +48,7 @@ def generate_examples(
             except Exception as e:
                 print(f"Error parsing example: {e}")
                 continue
-                
+
         return examples
         
     except Exception as e:
@@ -55,21 +57,41 @@ def generate_examples(
 
 def parse_example(example_text: str) -> Optional[ToolSelectionData]:
     """Parse a single example from text into a ToolSelectionData object."""
-    lines = example_text.strip().split('\n')
-    if len(lines) < 3:
-        return None
-        
+    # Remove asterisks and number prefixes from the text
+    example_text = example_text.replace('**', '')
+    # Remove numbered prefixes like "1.", "2.", etc.
+    example_text = ' '.join(example_text.split('.', 1)[1:]).strip()
+    
     try:
-        prompt_line = [l for l in lines if l.startswith('Prompt:')][0].replace('Prompt:', '').strip()
-        category_line = [l for l in lines if l.startswith('Prompt Category:')][0].replace('Prompt Category:', '').strip()
-        tools_line = [l for l in lines if l.startswith('Correct Tools:')][0].replace('Correct Tools:', '').strip()
+        # Split the text by double newlines to separate sections
+        sections = example_text.split('\n')
+        sections = [s.strip() for s in sections if s.strip()]
         
-        tools = json.loads(tools_line.replace("'", '"'))
+        # Extract the required fields
+        prompt = ''
+        category = ''
+        tools = []
         
-        return ToolSelectionData(
-            prompt=prompt_line,
-            prompt_category=category_line,
-            correct_tools=tools
-        )
-    except Exception:
+        for section in sections:
+            if section.startswith('Prompt:'):
+                prompt = section.replace('Prompt:', '').strip()
+            elif section.startswith('Prompt Category:'):
+                category = section.replace('Prompt Category:', '').strip()
+            elif section.startswith('Correct Tools:'):
+                tools_str = section.replace('Correct Tools:', '').strip()
+                # Clean up the tools string and parse it
+                tools = tools_str.strip('[]').replace("'", '').replace('"', '')
+                tools = [t.strip() for t in tools.split(',') if t.strip()]
+        
+        if prompt and category and tools:
+            return ToolSelectionData(
+                prompt=prompt,
+                prompt_category=category,
+                correct_tools=tools
+            )
+            
+    except Exception as e:
+        print(f"Error parsing example: {e}")
         return None
+    
+    return None
