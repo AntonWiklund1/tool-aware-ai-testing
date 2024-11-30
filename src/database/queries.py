@@ -8,7 +8,7 @@ def get_all_prompts() -> List[Dict[str, Any]]:
     conn, cur = get_connection()
     try:
         cur.execute("""
-            SELECT id, prompt, prompt_category, correct_tool, tools_available 
+            SELECT id, prompt, prompt_category, correct_tools, tools_available 
             FROM prompts
             ORDER BY id;
         """)
@@ -18,7 +18,7 @@ def get_all_prompts() -> List[Dict[str, Any]]:
                 "id": row[0],
                 "prompt": row[1],
                 "prompt_category": row[2],
-                "correct_tool": row[3],
+                "correct_tools": row[3],
                 "tools_available": row[4]
             }
             for row in prompts
