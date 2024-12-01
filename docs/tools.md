@@ -120,7 +120,7 @@ Calendar Events (2024-03-20 to +7 days):
 
 ### 4. Task Management Tool
 
-**Name**: task_managment_tool
+**Name**: task_management_tool
 
 **Purpose**: Manages tasks and to-do lists.
 **Parameters**:
