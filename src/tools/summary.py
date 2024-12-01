@@ -3,10 +3,7 @@ from src.utils.tracking import track_tool_usage
 @track_tool_usage
 def summary_tool(**kwargs) -> str:
     """
-    Get a summary of the user's documents.
-
-    Args:
-        text (Optional[str]): The text to summarize. If not provided, a default  text is used.
+    Get a summary of the user's uploaded documents to the database. So no need to provide a text argument.
 
     Returns:
         str:  summary of the text.
