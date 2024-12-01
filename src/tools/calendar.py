@@ -2,19 +2,24 @@ from typing import Optional, Dict, List, Union
 from src.utils.tracking import track_tool_usage
 
 @track_tool_usage
-def calendar_tool(start_date: str, days: int = 7, category: Optional[str] = None, **kwargs) -> str:
+def calendar_tool(start_date: str, days: int = 7, category: Optional[str] = None, 
+                 location: Optional[str] = None, min_participants: Optional[int] = None,
+                 max_duration: Optional[int] = None, **kwargs) -> str:
     """
-    Get calendar events for a specified date range.
+    Gets calendar events for a specified date range with advanced filtering.
     
     Args:
         start_date: Start date for calendar events (YYYY-MM-DD)
         days: Number of days to look ahead (default: 7)
         category: Optional category filter for events
+        location: Optional location filter (e.g., "Conference Room A", "Virtual")
+        min_participants: Optional minimum number of participants
+        max_duration: Optional maximum duration in minutes
     
     Returns:
         str: Calendar events for the specified period
     """
-    # Structured mock data for internal use
+    # Add more mock events with diverse properties
     structured_events = {
         "events": [
             {
@@ -59,23 +64,50 @@ def calendar_tool(start_date: str, days: int = 7, category: Optional[str] = None
                 "duration": 60,
                 "participants": 8,
                 "location": "Conference Room B"
+            },
+            {
+                "title": "Product Launch",
+                "day": "Wednesday",
+                "time": "10:00 AM",
+                "category": "marketing",
+                "duration": 120,
+                "participants": 50,
+                "location": "Main Auditorium",
+                "priority": "high",
+                "notes": "Q&A session included"
+            },
+            {
+                "title": "Training Workshop",
+                "day": "Thursday",
+                "time": "2:00 PM",
+                "category": "training",
+                "duration": 180,
+                "participants": 15,
+                "location": "Training Room",
+                "required_equipment": ["Laptops", "Projector"]
             }
         ]
     }
 
-    # Filter events based on category
+    # Enhanced filtering
     filtered_events = [
         event for event in structured_events["events"]
-        if not category or event["category"] == category
+        if (not category or event["category"] == category) and
+           (not location or event["location"] == location) and
+           (not min_participants or event.get("participants", 0) >= min_participants) and
+           (not max_duration or event.get("duration", 0) <= max_duration)
     ]
 
-    # If no events match the filter
-    if not filtered_events:
-        return f"No events found for the period {start_date} to +{days} days"
-
-    # Format output string
+    # Enhanced output format
     output = f"Calendar Events ({start_date} to +{days} days):"
     for event in filtered_events:
-        output += f"\n- {event['day']}: {event['title']} ({event['time']}) [category: {event['category']}]"
+        output += f"\n- {event['day']}: {event['title']}"
+        output += f" ({event['time']}, {event.get('duration', 'N/A')} mins)"
+        output += f" [category: {event['category']}]"
+        output += f" [location: {event.get('location', 'N/A')}]"
+        if "participants" in event:
+            output += f" [participants: {event['participants']}]"
+        if "priority" in event:
+            output += f" [priority: {event['priority']}]"
 
-    return output
+    return output if filtered_events else f"No events found matching the criteria"
