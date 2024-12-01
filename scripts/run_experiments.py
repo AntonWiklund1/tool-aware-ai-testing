@@ -1,6 +1,6 @@
 from datetime import datetime
 from src.agents import swarm_response
-from src.tools import summary_tool, search_web_tool, task_managment_tool, code_tool, database_tool, calendar_tool, statistical_analysis_tool
+from src.tools import summary_tool, search_web_tool, task_management_tool, code_tool, database_tool, calendar_tool, statistical_analysis_tool
 from src.tools.schemas import SearchWebToolParams, TaskManagmentToolParams, CodeToolParams, DatabaseToolParams, StatisticalAnalysisToolParams
 from src.utils.tracking import ToolTracker
 from src.database.queries import get_all_prompts
@@ -70,10 +70,10 @@ def main():
             "enabled": True,
         },
         {
-            "name": "task_managment_tool",
-            "function": task_managment_tool,
+            "name": "task_management_tool",
+            "function": task_management_tool,
             "schema": TaskManagmentToolParams,
-            "description": task_managment_tool.__doc__,
+            "description": task_management_tool.__doc__,
             "enabled": True,
         },
         {
@@ -116,9 +116,7 @@ def main():
 
     # Process each prompt
     for index, prompt in enumerate(prompts, 1):
-        if index > 5:
-            break
-            
+
         print_header(f"Prompt {index}/{total_prompts}", "•")
         print("📋 Prompt:")
         print(f"{prompt['prompt']}\n")
