@@ -1,173 +1,176 @@
 TOOL_METADATA = {
-    "statistical_analysis_tool": {
-        "description": "Performs statistical analysis on numerical data",
+    "summary_tool": {
+        "description": """Get a summary of the user's uploaded documents to the database. So no need to provide a text argument.""",
         "capabilities": [
-            "Calculate mean, median, mode, standard deviation",
-            "Process numerical arrays",
-            "Analyze time series data",
-            "Generate statistical reports"
+            "Get a summary of the user's uploaded documents to the database. So no need to provide a text argument.",
         ],
-        "input_types": ["numerical arrays", "time series", "user scores"],
+        "input_types": [
+        ],
         "common_use_cases": [
-            "Analyzing user engagement metrics",
-            "Processing performance data",
-            "Calculating averages and distributions"
         ],
-        "input_format": """
-- List of numbers: [0.92, 0.85, 0.78, 0.95]
-- List of dictionaries with numerical fields:
-  [{"duration": 30, "participants": 8}, {"duration": 60, "participants": 12}]""",
-        "output_format": {
-            "all_stats": """Statistical Analysis Results:
-- Mean: 45.7
-- Median: 42.0
-- Mode: 37.5
-- Standard Deviation: 12.3
-- Sample Size: 10
-- Total: 457""",
-            "single_stat": "Mean: 45.7"
-        }
-    },
-    "calendar_tool": {
-        "description": "Manages and queries calendar events",
-        "capabilities": [
-            "Retrieve events by date range",
-            "Filter events by category",
-            "Track meeting participants",
-            "Manage event durations"
-        ],
-        "input_types": ["dates", "time ranges", "event categories"],
-        "common_use_cases": [
-            "Meeting scheduling",
-            "Event planning",
-            "Availability checking"
-        ],
-        "input_format": """
-- start_date: "2024-03-20" (YYYY-MM-DD)
-- days: 7 (optional, default: 7)
-- category: "meetings" (optional)""",
-        "output_format": """Calendar Events (2024-03-20 to +7 days):
-- Monday: Team Planning Meeting (9:00 AM) [category: meetings]
-- Tuesday: Client Review (2:00 PM) [category: meetings]"""
-    },
-    "database_tool": {
-        "description": "Executes database queries and manages data",
-        "capabilities": [
-            "Execute SQL queries",
-            "Filter user data",
-            "Generate reports",
-            "Track user metrics"
-        ],
-        "input_types": ["SQL queries", "user IDs", "metrics"],
-        "common_use_cases": [
-            "User analytics",
-            "Data reporting",
-            "Metric tracking"
-        ],
-        "input_format": """SQL Queries:
-- SELECT: "SELECT * FROM users WHERE posts > 100"
-- INSERT: "INSERT INTO users (name, posts) VALUES ('John', 120)"
-- UPDATE: "UPDATE users SET posts = 150 WHERE id = 1"
-- DELETE: "DELETE FROM users WHERE id = 1" """,
-        "output_format": {
-            "select": """user_id | posts | country | city   
-1       | 156   | USA     | Seattle
-2       | 89    | Canada  | Toronto
-Total rows: 2""",
-            "modify": """Insert: Successfully inserted 1 row
-Update: Successfully updated 5 rows
-Delete: Successfully deleted 2 rows"""
-        }
-    },
-    "task_management_tool": {
-        "description": "Manages tasks and to-do lists",
-        "capabilities": [
-            "Create and track tasks",
-            "Set priorities",
-            "Manage deadlines",
-            "Categorize tasks"
-        ],
-        "input_types": ["task details", "priorities", "dates"],
-        "common_use_cases": [
-            "Project management",
-            "Personal task tracking",
-            "Team coordination"
-        ],
-        "input_format": """
-- date: "2024-03-20" (YYYY-MM-DD)
-- category: "meetings" (optional)
-- priority: "high" | "medium" | "low" (optional)""",
-        "output_format": """Task List for 2024-03-20:
-- Team standup (10:00 AM) [category: meetings] [priority: high]
-- Client presentation (2:00 PM) [category: meetings] [priority: high]"""
+        "input_format": """No input format available""",
+        "output_format": """str:  summary of the text.
+
+Example:
+Summary Results:
+- The document discusses various topics
+- Key points include data analysis and communication
+- Concludes with recommendations""",
     },
     "search_web_tool": {
-        "description": "Performs web searches and retrieves information",
+        "description": """Search the web for information. **Description**: This tool searches the web for information based on the user's query.""",
         "capabilities": [
-            "Search web content",
-            "Filter by categories",
-            "Sort by relevance",
-            "Track publication dates"
+            "Search the web for information. **Description**: This tool searches the web for information based on the user's query.",
+            "Handle query (str) parameter",
         ],
-        "input_types": ["search queries", "keywords", "topics"],
+        "input_types": [
+            "str",
+        ],
         "common_use_cases": [
-            "Research",
-            "Information gathering",
-            "News tracking"
         ],
-        "input_format": "query: 'search term or phrase'",
-        "output_format": """Search Results for: AI developments
+        "input_format": """- query: str (optional) (default: PydanticUndefined) - The search query to look up information about""",
+        "output_format": """str: Search results formatted as a readable string
+
+Example:
+Search Results for: AI developments
 1. Latest Developments in AI Technology
    Recent breakthroughs in artificial intelligence...
    Source: https://example.com/ai-developments
-   Published: 2024-03-01"""
+   Published: 2024-03-01""",
+    },
+    "statistical_analysis_tool": {
+        "description": """This tool performs statistical analysis on numerical data and returns results.""",
+        "capabilities": [
+            "This tool performs statistical analysis on numerical data and returns results.",
+            "Handle data parameter",
+            "Handle analysis_type parameter",
+            "Handle confidence_level parameter",
+        ],
+        "input_types": [
+            "List",
+            "str",
+            "Optional",
+        ],
+        "common_use_cases": [
+            "Data analysis",
+        ],
+        "input_format": """- data: List (optional) (default: PydanticUndefined) - List of numerical data points to analyze
+- analysis_type: str (optional) (default: PydanticUndefined) - Type of analysis to perform (mean, median, mode, std_dev, all)
+- confidence_level: Optional (optional) (default: 0.95) - Confidence level for statistical calculations (0-1)""",
+        "output_format": """str: Statistical analysis results
+
+Example:
+Statistical Analysis Results:
+- Mean: 85.6
+- Median: 82.5
+- Mode: 80.0
+- Standard Deviation: 12.4
+- Sample Size: 50
+- Total: 4280""",
+    },
+    "task_management_tool": {
+        "description": """Task management tool with advanced filtering and organization. Use this tool to manage your tasks and to-do lists. Not for calendar management.""",
+        "capabilities": [
+            "Task management tool with advanced filtering and organization. Use this tool to manage your tasks and to-do lists. Not for calendar management.",
+            "Handle date parameter",
+            "Handle category parameter",
+            "Handle priority parameter",
+            "Handle assignee parameter",
+            "Handle status parameter",
+            "Handle due_within_days parameter",
+        ],
+        "input_types": [
+            "str",
+            "Optional",
+        ],
+        "common_use_cases": [
+            "Filtering and searching",
+            "Date-based operations",
+        ],
+        "input_format": """- date: str (optional) (default: PydanticUndefined) - The date to get tasks for (YYYY-MM-DD)
+- category: Optional (optional) - Filter tasks by category
+- priority: Optional (optional) - Filter tasks by priority (low, medium, high)""",
+        "output_format": """Task List for 2024-03-15:
+- Team standup (10:00 AM) [category: meetings] [priority: high] [assignee: John] [status: pending]
+- Client presentation (2:00 PM) [category: meetings] [priority: high] [assignee: Sarah] [status: in_progress]""",
     },
     "code_tool": {
-        "description": "Executes and analyzes code",
+        "description": """Executes code snippets in various programming languages.""",
         "capabilities": [
-            "Execute Python code",
-            "Run TypeScript",
-            "Track performance metrics",
-            "Handle errors"
+            "Executes code snippets in various programming languages.",
+            "Handle code parameter",
+            "Handle language parameter",
+            "Handle timeout parameter",
         ],
-        "input_types": ["code snippets", "script files", "commands"],
+        "input_types": [
+            "str",
+            "Optional",
+        ],
         "common_use_cases": [
-            "Code testing",
-            "Script execution",
-            "Performance analysis"
         ],
-        "input_format": """
-- code: String containing code to execute
-- language: "python" | "typescript" (default: "python")
-- timeout: Number of seconds (default: 30)""",
-        "output_format": {
-            "success": """Python Execution Result:
+        "input_format": """- code: str (optional) (default: PydanticUndefined) - The code to execute
+- language: str (optional) (default: python) - Programming language of the code
+- timeout: Optional (optional) (default: 30) - Maximum execution time in seconds""",
+        "output_format": """str: Execution results
+
+Example:
+Python Execution Result:
 > Output: Hello, World!
 > Execution time: 0.023s
 > Memory usage: 12.4 MB
 > CPU usage: 2.1%""",
-            "error": """Python Execution Error:
-> Error Type: SyntaxError
-> Message: invalid syntax
-> Line: 3"""
-        }
     },
-    "summary_tool": {
-        "description": "Generates document summaries",
+    "database_tool": {
+        "description": """Executes a SQL query on the database. Available columns: - `user_id` - `number_of_posts` - `registered_at` - `last_login` - `country` - `city` - `language` - `gender` - `engagement_score`""",
         "capabilities": [
-            "Summarize documents",
-            "Extract key points",
-            "Identify main topics"
+            "Executes a SQL query on the database. Available columns: - `user_id` - `number_of_posts` - `registered_at` - `last_login` - `country` - `city` - `language` - `gender` - `engagement_score`",
+            "Handle query (str) parameter",
         ],
-        "input_types": ["documents", "text content", "articles"],
+        "input_types": [
+            "str",
+        ],
         "common_use_cases": [
-            "Legal document analysis",
-            "Report summarization",
-            "Content briefing"
         ],
-        "input_format": "text: Optional[str] - The text to summarize",
-        "output_format": """- The document discusses various topics.
-- Key points include the importance of data analysis and effective communication.
-- Concludes with future trends in technology."""
-    }
+        "input_format": """- query: str (optional) (default: PydanticUndefined) - The SQL query to execute""",
+        "output_format": """str: database query results
+
+Example:
+user_id | posts | engagement
+1       | 156   | 0.85
+2       | 89    | 0.72
+3       | 234   | 0.93
+Total rows: 3""",
+    },
+    "calendar_tool": {
+        "description": """Gets calendar events for a specified date range with advanced filtering.""",
+        "capabilities": [
+            "Gets calendar events for a specified date range with advanced filtering.",
+            "Handle start_date parameter",
+            "Handle days parameter",
+            "Handle category parameter",
+            "Handle location parameter",
+            "Handle min_participants parameter",
+            "Handle max_duration parameter",
+        ],
+        "input_types": [
+            "str",
+            "Optional",
+        ],
+        "common_use_cases": [
+            "Filtering and searching",
+            "Date-based operations",
+        ],
+        "input_format": """- start_date: str (optional) (default: PydanticUndefined) - Start date for calendar events (YYYY-MM-DD)
+- days: Optional (optional) (default: 7) - Number of days to look ahead
+- category: Optional (optional) - Filter events by category
+- location: Optional (optional) - Filter events by location
+- min_participants: Optional (optional) - Filter events by minimum number of participants
+- max_duration: Optional (optional) - Filter events by maximum duration in minutes""",
+        "output_format": """str: Calendar events for the specified period
+
+Example:
+Calendar Events (2024-03-15 to +7 days):
+- Monday: Team Planning Meeting (9:00 AM, 60 mins) [category: meetings] [location: Conference Room A] [participants: 10]
+- Tuesday: Client Review (2:00 PM, 90 mins) [category: meetings] [location: Virtual] [participants: 5]""",
+    },
 }
