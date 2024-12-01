@@ -5,7 +5,49 @@ from src.tools.schemas import SearchWebToolParams, TaskManagmentToolParams, Code
 from src.utils.tracking import ToolTracker
 from src.database.queries import get_all_prompts
 from src.database.connection import get_connection
+from src.tools import DEFAULT_TOOLS
 import json
+
+import importlib
+
+def get_tools_docs():
+    """Get the documentation for all tools."""
+    tools_metadata = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "total_tools": len(DEFAULT_TOOLS),
+        "tools": []
+    }
+
+    for tool_name in DEFAULT_TOOLS:
+        module_name = tool_name.replace('_tool', '')
+        module = importlib.import_module(f"src.tools.{module_name}")
+        tool_function = getattr(module, tool_name)
+        
+        # Extract function signature
+        import inspect
+        signature = str(inspect.signature(tool_function))
+    
+        tool_info = {
+            "name": tool_function.__name__,
+            "description": tool_function.__doc__,
+            "module": module_name,
+            "signature": signature,
+            "parameters": {
+                name: {
+                    "type": str(param.annotation) if param.annotation != inspect.Parameter.empty else "Not specified",
+                    "default": str(param.default) if param.default != inspect.Parameter.empty else None,
+                    "kind": str(param.kind)
+                }
+                for name, param in inspect.signature(tool_function).parameters.items()
+            },
+            "metadata": {
+                "is_async": inspect.iscoroutinefunction(tool_function),
+                "source_code": inspect.getsource(tool_function),
+                "file_location": inspect.getfile(tool_function)
+            }
+            }
+        tools_metadata["tools"].append(tool_info)
+    return tools_metadata
 
 def print_header(text: str, char: str = "=", length: int = 80):
     """Print a formatted header"""
@@ -20,15 +62,15 @@ def print_tool_summary(call: dict):
     print(f"📝 Arguments: {json.dumps(call['arguments'], indent=2)}")
     print(f"🕒 Timestamp: {call['timestamp']}\n")
 
-def create_test_run(model_name: str, instructions: str) -> int:
+def create_test_run(model_name: str, instructions: str, agent_type: str) -> int:
     """Create a new test run and return its ID"""
     conn, cur = get_connection()
     try:
         cur.execute("""
-            INSERT INTO test_runs (model_name, instructions, started_at, configuration)
-            VALUES (%s, %s, %s, %s::jsonb)
+            INSERT INTO test_runs (model_name, instructions, started_at, configuration, agent_type)
+            VALUES (%s, %s, %s, %s::jsonb, %s)
             RETURNING id;
-        """, (model_name, instructions, datetime.now(), json.dumps({})))
+        """, (model_name, instructions, datetime.now(), json.dumps({}), agent_type))
         test_run_id = cur.fetchone()[0]
         conn.commit()
         return test_run_id
@@ -53,6 +95,7 @@ def save_result(prompt_id: int, test_run_id: int, tool_calls: list, time_taken: 
 def main():
     tracker = ToolTracker()
     
+    agent_function = swarm_response
     MODEL = "gpt-4o-mini"
     INSTRUCTIONS = """You are a helpful AI assistant."""
     AVAILABLE_TOOLS = [
@@ -105,8 +148,12 @@ def main():
         },
     ]
 
+
+    # TODO: Add other agent types
+    AGENT_TYPE = agent_function.__name__.split('_')[0]
+
     # Create a new test run
-    test_run_id = create_test_run(MODEL, INSTRUCTIONS)
+    test_run_id = create_test_run(MODEL, INSTRUCTIONS, AGENT_TYPE)
     print_header(f"Test Run ID: {test_run_id}")
 
     # Get all prompts from database
@@ -123,7 +170,7 @@ def main():
         
         try:
             tracker.clear()
-            response = swarm_response(prompt['prompt'], MODEL, AVAILABLE_TOOLS, INSTRUCTIONS)
+            response = agent_function(prompt['prompt'], MODEL, AVAILABLE_TOOLS, INSTRUCTIONS)
             
             print("🤖 Response:")
             print(f"{response}\n")
@@ -142,7 +189,7 @@ def main():
             print(f"⏱️  Total Time: {total_time:.3f}s")
             print(f"🎯 Expected Tools: {', '.join(correct_tools)}")
             print(f"🔧 Used Tools: {', '.join(tools_used)}")
-            
+
             save_result(
                 prompt_id=prompt['id'],
                 test_run_id=test_run_id,
@@ -150,7 +197,7 @@ def main():
                 time_taken=total_time,
                 success_rate=success
             )
-            
+
         except Exception as e:
             print("\n❌ Error:")
             print(f"{str(e)}")
