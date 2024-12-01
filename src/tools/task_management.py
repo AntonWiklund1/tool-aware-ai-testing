@@ -2,18 +2,27 @@ from typing import Optional
 from src.utils.tracking import track_tool_usage
 
 @track_tool_usage
-def task_managment_tool(date: str, category: Optional[str] = None, priority: Optional[str] = None, **kwargs) -> str:
+def task_management_tool(date: str,
+                        category: Optional[str] = None,
+                        priority: Optional[str] = None,
+                        assignee: Optional[str] = None,
+                        status: Optional[str] = None,
+                        due_within_days: Optional[int] = None,
+                        **kwargs) -> str:
     """
-    This tool manages tasks and to-do lists for specific dates.
+    Task management tool with advanced filtering and organization.
+
+    Use this tool to manage your tasks and to-do lists. Not for calendar management.
     
     Args:
-        date: The date to get tasks for (YYYY-MM-DD format)
-        category: Optional category filter for tasks
-        priority: Optional priority filter (low, medium, high)
-    
-    Returns:
-        str: task list for the specified date
+        date: The date to get tasks for (YYYY-MM-DD)
+        category: Filter by category
+        priority: Filter by priority
+        assignee: Filter by assigned person
+        status: Filter by task status
+        due_within_days: Filter tasks due within specified days
     """
+
     # Structured mock data for internal use
     structured_tasks = {
         "tasks": [
@@ -59,7 +68,10 @@ def task_managment_tool(date: str, category: Optional[str] = None, priority: Opt
     filtered_tasks = [
         task for task in structured_tasks["tasks"]
         if (not category or task["category"] == category) and
-           (not priority or task["priority"] == priority)
+           (not priority or task["priority"] == priority) and
+           (not assignee or task["assignee"] == assignee) and
+           (not status or task["status"] == status) and
+           (not due_within_days or task["due_within_days"] <= due_within_days)
     ]
 
     # If no tasks match the filters
