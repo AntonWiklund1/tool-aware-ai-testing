@@ -35,7 +35,8 @@ def main():
             instructions TEXT NOT NULL,
             started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             completed_at TIMESTAMP,
-            configuration JSONB
+            configuration JSONB,
+            agent_type TEXT NOT NULL
         );
         """,
 
