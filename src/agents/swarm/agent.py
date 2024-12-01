@@ -1,5 +1,4 @@
 import logging
-import os
 from typing import List, Dict, Any
 from .core import Swarm
 from .types import Agent
