@@ -16,6 +16,9 @@ class TaskManagmentToolParams(BaseModel):
     date: str = Field(..., description="The date to get tasks for (YYYY-MM-DD)")
     category: Optional[str] = Field(None, description="Filter tasks by category")
     priority: Optional[str] = Field(None, description="Filter tasks by priority (low, medium, high)")
+    assignee: Optional[str] = Field(None, description="Filter tasks by assigned person")
+    status: Optional[str] = Field(None, description="Filter tasks by status (pending, in_progress, completed)")
+    due_within_days: Optional[int] = Field(None, description="Filter tasks due within specified days")
 
 class CodeToolParams(BaseModel):
     code: str = Field(..., description="The code to execute")
@@ -26,3 +29,6 @@ class CalendarToolParams(BaseModel):
     start_date: str = Field(..., description="Start date for calendar events (YYYY-MM-DD)")
     days: Optional[int] = Field(7, description="Number of days to look ahead")
     category: Optional[str] = Field(None, description="Filter events by category")
+    location: Optional[str] = Field(None, description="Filter events by location")
+    min_participants: Optional[int] = Field(None, description="Filter events by minimum number of participants")
+    max_duration: Optional[int] = Field(None, description="Filter events by maximum duration in minutes")
