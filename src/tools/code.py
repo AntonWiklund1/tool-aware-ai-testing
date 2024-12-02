@@ -8,8 +8,8 @@ from src.utils.tracking import track_tool_usage
 @track_tool_usage
 def code_tool(code: str, language: str = "python", timeout: int = 30, **kwargs) -> str:
     """
-    Executes code snippets in various programming languages.
-    
+    Executes code snippets in python or typescript.
+
     Args:
         code: The code to execute
         language: Programming language of the code (default: python)
