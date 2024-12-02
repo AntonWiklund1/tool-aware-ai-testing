@@ -1,8 +1,8 @@
+from math import ceil
 from dotenv import load_dotenv
 import pandas as pd
 from langchain_openai import ChatOpenAI
 from src.database.connection import get_connection
-from src.database.models import Prompt
 from .tool_selection.models import SimpleCache
 from .tool_selection.prompts import create_prompt_template
 from .tool_selection.generator import generate_examples
@@ -10,8 +10,10 @@ from src.tools import DEFAULT_TOOLS
 
 load_dotenv()
 
-SAMPLES_PER_RUN = 50
-RUNS = 1
+NUMBER_OF_PROMPTS = 500
+
+SAMPLES_PER_RUN = 70  # Maximum samples per run (because of token limit)
+RUNS = ceil(NUMBER_OF_PROMPTS / SAMPLES_PER_RUN)
 
 def save_to_database(synthetic_data):
     """Save the generated data to PostgreSQL database."""
@@ -22,7 +24,7 @@ def save_to_database(synthetic_data):
             INSERT INTO prompts (prompt, prompt_category, correct_tools, tools_available)
             VALUES (%s, %s, %s, %s)
         """
-        
+
         # Insert each record
         for item in synthetic_data:
             # Convert the tools list to a proper PostgreSQL array format
@@ -59,7 +61,7 @@ def main():
     prompt_template = create_prompt_template()
     
     # Initialize LLM
-    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0, cache=cache)
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=1)
     
     # Generate examples
     all_results = []
