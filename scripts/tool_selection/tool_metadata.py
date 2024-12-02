@@ -89,15 +89,18 @@ Statistical Analysis Results:
         ],
         "input_format": """- date: str (optional) (default: PydanticUndefined) - The date to get tasks for (YYYY-MM-DD)
 - category: Optional (optional) - Filter tasks by category
-- priority: Optional (optional) - Filter tasks by priority (low, medium, high)""",
+- priority: Optional (optional) - Filter tasks by priority (low, medium, high)
+- assignee: Optional (optional) - Filter tasks by assigned person
+- status: Optional (optional) - Filter tasks by status (pending, in_progress, completed)
+- due_within_days: Optional (optional) - Filter tasks due within specified days""",
         "output_format": """Task List for 2024-03-15:
 - Team standup (10:00 AM) [category: meetings] [priority: high] [assignee: John] [status: pending]
 - Client presentation (2:00 PM) [category: meetings] [priority: high] [assignee: Sarah] [status: in_progress]""",
     },
     "code_tool": {
-        "description": """Executes code snippets in various programming languages.""",
+        "description": """Executes code snippets in python or typescript.""",
         "capabilities": [
-            "Executes code snippets in various programming languages.",
+            "Executes code snippets in python or typescript.",
             "Handle code parameter",
             "Handle language parameter",
             "Handle timeout parameter",
